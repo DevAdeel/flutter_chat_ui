@@ -367,7 +367,11 @@ class _ChatState extends State<Chat> {
               : min(constraints.maxWidth * 0.78, 440).floor();
 
       return SwipeTo(
-        onRightSwipe: () => widget.onRightSwipe,
+        onRightSwipe: () {
+          if(widget.onRightSwipe != null){
+            widget.onRightSwipe!();
+          }
+        },
         rightSwipeWidget: widget.iconOnRightSwipe,
         child: Message(
           key: ValueKey(message.id),
