@@ -1,9 +1,11 @@
+import 'dart:ffi';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/src/widgets/inherited_l10n.dart';
 import 'package:intl/intl.dart';
 import 'package:photo_view/photo_view_gallery.dart';
+import 'package:swipe_to/swipe_to.dart';
 import '../chat_l10n.dart';
 import '../chat_theme.dart';
 import '../conditional/conditional.dart';
@@ -64,6 +66,9 @@ class Chat extends StatefulWidget {
     this.theme = const DefaultChatTheme(),
     this.timeFormat,
     this.usePreviewData = true,
+    this.textSelectable = true,
+    this.onRightSwipe,
+    this.iconOnRightSwipe,
     required this.user,
   }) : super(key: key);
 
@@ -73,6 +78,13 @@ class Chat extends StatefulWidget {
     required types.Message message,
     required bool nextMessageInGroup,
   })? bubbleBuilder;
+
+  //Allows you to copy text from message. Default value is true
+  final bool textSelectable;
+
+  //Allow swipe message to right
+  final Function? onRightSwipe;
+  final Widget? iconOnRightSwipe;
 
   /// Allows you to replace the default Input widget e.g. if you want to create
   /// a channel view.
@@ -354,36 +366,41 @@ class _ChatState extends State<Chat> {
               ? min(constraints.maxWidth * 0.72, 440).floor()
               : min(constraints.maxWidth * 0.78, 440).floor();
 
-      return Message(
-        key: ValueKey(message.id),
-        bubbleBuilder: widget.bubbleBuilder,
-        customMessageBuilder: widget.customMessageBuilder,
-        emojiEnlargementBehavior: widget.emojiEnlargementBehavior,
-        fileMessageBuilder: widget.fileMessageBuilder,
-        hideBackgroundOnEmojiMessages: widget.hideBackgroundOnEmojiMessages,
-        imageMessageBuilder: widget.imageMessageBuilder,
-        message: message,
-        messageWidth: _messageWidth,
-        onAvatarTap: widget.onAvatarTap,
-        onMessageLongPress: widget.onMessageLongPress,
-        onMessageStatusLongPress: widget.onMessageStatusLongPress,
-        onMessageStatusTap: widget.onMessageStatusTap,
-        onMessageTap: (tappedMessage) {
-          if (tappedMessage is types.ImageMessage &&
-              widget.disableImageGallery != true) {
-            _onImagePressed(tappedMessage);
-          }
+      return SwipeTo(
+        onRightSwipe: () => widget.onRightSwipe,
+        rightSwipeWidget: widget.iconOnRightSwipe,
+        child: Message(
+          key: ValueKey(message.id),
+          bubbleBuilder: widget.bubbleBuilder,
+          customMessageBuilder: widget.customMessageBuilder,
+          emojiEnlargementBehavior: widget.emojiEnlargementBehavior,
+          fileMessageBuilder: widget.fileMessageBuilder,
+          hideBackgroundOnEmojiMessages: widget.hideBackgroundOnEmojiMessages,
+          imageMessageBuilder: widget.imageMessageBuilder,
+          message: message,
+          messageWidth: _messageWidth,
+          onAvatarTap: widget.onAvatarTap,
+          onMessageLongPress: widget.onMessageLongPress,
+          onMessageStatusLongPress: widget.onMessageStatusLongPress,
+          onMessageStatusTap: widget.onMessageStatusTap,
+          textSelectable: widget.textSelectable,
+          onMessageTap: (tappedMessage) {
+            if (tappedMessage is types.ImageMessage &&
+                widget.disableImageGallery != true) {
+              _onImagePressed(tappedMessage);
+            }
 
-          widget.onMessageTap?.call(tappedMessage);
-        },
-        onPreviewDataFetched: _onPreviewDataFetched,
-        roundBorder: map['nextMessageInGroup'] == true,
-        showAvatar: map['nextMessageInGroup'] == false,
-        showName: map['showName'] == true,
-        showStatus: map['showStatus'] == true,
-        showUserAvatars: widget.showUserAvatars,
-        textMessageBuilder: widget.textMessageBuilder,
-        usePreviewData: widget.usePreviewData,
+            widget.onMessageTap?.call(tappedMessage);
+          },
+          onPreviewDataFetched: _onPreviewDataFetched,
+          roundBorder: map['nextMessageInGroup'] == true,
+          showAvatar: map['nextMessageInGroup'] == false,
+          showName: map['showName'] == true,
+          showStatus: map['showStatus'] == true,
+          showUserAvatars: widget.showUserAvatars,
+          textMessageBuilder: widget.textMessageBuilder,
+          usePreviewData: widget.usePreviewData,
+        ),
       );
     }
   }

@@ -18,7 +18,11 @@ class TextMessage extends StatelessWidget {
     this.onPreviewDataFetched,
     required this.usePreviewData,
     required this.showName,
+    required this.textSelectable,
   }) : super(key: key);
+
+  //Allows you to copy text from message. Default value is true
+  final bool textSelectable;
 
   /// See [Message.emojiEnlargementBehavior]
   final EmojiEnlargementBehavior emojiEnlargementBehavior;
@@ -116,17 +120,29 @@ class TextMessage extends StatelessWidget {
               style: theme.userNameTextStyle.copyWith(color: color),
             ),
           ),
-        SelectableText(
-          message.text,
-          style: user.id == message.author.id
-              ? enlargeEmojis
-                  ? theme.sentEmojiMessageTextStyle
-                  : theme.sentMessageBodyTextStyle
-              : enlargeEmojis
-                  ? theme.receivedEmojiMessageTextStyle
-                  : theme.receivedMessageBodyTextStyle,
-          textWidthBasis: TextWidthBasis.longestLine,
-        ),
+        textSelectable
+            ? Text(
+                message.text,
+                style: user.id == message.author.id
+                    ? enlargeEmojis
+                        ? theme.sentEmojiMessageTextStyle
+                        : theme.sentMessageBodyTextStyle
+                    : enlargeEmojis
+                        ? theme.receivedEmojiMessageTextStyle
+                        : theme.receivedMessageBodyTextStyle,
+                textWidthBasis: TextWidthBasis.longestLine,
+              )
+            : SelectableText(
+                message.text,
+                style: user.id == message.author.id
+                    ? enlargeEmojis
+                        ? theme.sentEmojiMessageTextStyle
+                        : theme.sentMessageBodyTextStyle
+                    : enlargeEmojis
+                        ? theme.receivedEmojiMessageTextStyle
+                        : theme.receivedMessageBodyTextStyle,
+                textWidthBasis: TextWidthBasis.longestLine,
+              ),
       ],
     );
   }

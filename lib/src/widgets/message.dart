@@ -35,6 +35,7 @@ class Message extends StatelessWidget {
     required this.showStatus,
     required this.showUserAvatars,
     this.textMessageBuilder,
+    required this.textSelectable,
     required this.usePreviewData,
   }) : super(key: key);
 
@@ -48,6 +49,9 @@ class Message extends StatelessWidget {
     required types.Message message,
     required bool nextMessageInGroup,
   })? bubbleBuilder;
+
+  //Allows you to copy text from message. Default value is true
+  final bool textSelectable;
 
   /// Build a custom message inside predefined bubble
   final Widget Function(types.CustomMessage, {required int messageWidth})?
@@ -216,6 +220,7 @@ class Message extends StatelessWidget {
                 onPreviewDataFetched: onPreviewDataFetched,
                 showName: showName,
                 usePreviewData: usePreviewData,
+                textSelectable: textSelectable,
               );
       default:
         return const SizedBox();
