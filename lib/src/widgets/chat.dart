@@ -83,7 +83,7 @@ class Chat extends StatefulWidget {
   final bool textSelectable;
 
   //Allow swipe message to right
-  final Function? onRightSwipe;
+  final Function(types.Message)? onRightSwipe;
   final Widget? iconOnRightSwipe;
 
   /// Allows you to replace the default Input widget e.g. if you want to create
@@ -369,7 +369,7 @@ class _ChatState extends State<Chat> {
       return SwipeTo(
         onRightSwipe: () {
           if(widget.onRightSwipe != null){
-            widget.onRightSwipe!();
+            widget.onRightSwipe!(message);
           }
         },
         rightSwipeWidget: widget.iconOnRightSwipe,

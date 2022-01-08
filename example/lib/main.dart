@@ -189,9 +189,12 @@ class _ChatPageState extends State<ChatPage> {
         child: Chat(
           messages: _messages,
           onAttachmentPressed: _handleAtachmentPressed,
-          onMessageTap: _handleMessageTap,
+          onMessageTap: (a){},
           onPreviewDataFetched: _handlePreviewDataFetched,
           onSendPressed: _handleSendPressed,
+          onRightSwipe: (message){
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message.id)));
+          },
           user: _user,
         ),
       ),
