@@ -78,95 +78,124 @@ class _ImageMessageState extends State<ImageMessage> {
   Widget build(BuildContext context) {
     final _user = InheritedUser.of(context).user;
 
-    if (_size.aspectRatio == 0) {
-      return Container(
-        color: InheritedChatTheme.of(context).theme.secondaryColor,
-        height: _size.height,
-        width: _size.width,
-      );
-    } else if (_size.aspectRatio < 0.1 || _size.aspectRatio > 10) {
-      return Container(
-        color: _user.id == widget.message.author.id
-            ? InheritedChatTheme.of(context).theme.primaryColor
-            : InheritedChatTheme.of(context).theme.secondaryColor,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              height: 64,
-              margin: EdgeInsets.fromLTRB(
-                InheritedChatTheme.of(context).theme.messageInsetsVertical,
-                InheritedChatTheme.of(context).theme.messageInsetsVertical,
-                16,
-                InheritedChatTheme.of(context).theme.messageInsetsVertical,
-              ),
-              width: 64,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(15),
-                child: Image(
-                  fit: BoxFit.cover,
-                  image: _image!,
-                ),
-              ),
-            ),
-            Flexible(
-              child: Container(
+    _buildImage(){
+      if (_size.aspectRatio == 0) {
+        return Container(
+          color: InheritedChatTheme.of(context).theme.secondaryColor,
+          height: _size.height,
+          width: _size.width,
+        );
+      }
+      else if (_size.aspectRatio < 0.1 || _size.aspectRatio > 10) {
+        return Container(
+          color: _user.id == widget.message.author.id
+              ? InheritedChatTheme.of(context).theme.primaryColor
+              : InheritedChatTheme.of(context).theme.secondaryColor,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                height: 64,
                 margin: EdgeInsets.fromLTRB(
-                  0,
                   InheritedChatTheme.of(context).theme.messageInsetsVertical,
-                  InheritedChatTheme.of(context).theme.messageInsetsHorizontal,
+                  InheritedChatTheme.of(context).theme.messageInsetsVertical,
+                  16,
                   InheritedChatTheme.of(context).theme.messageInsetsVertical,
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      widget.message.name,
-                      style: _user.id == widget.message.author.id
-                          ? InheritedChatTheme.of(context)
-                              .theme
-                              .sentMessageBodyTextStyle
-                          : InheritedChatTheme.of(context)
-                              .theme
-                              .receivedMessageBodyTextStyle,
-                      textWidthBasis: TextWidthBasis.longestLine,
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(
-                        top: 4,
-                      ),
-                      child: Text(
-                        formatBytes(widget.message.size.truncate()),
+                width: 64,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(15),
+                  child: Image(
+                    fit: BoxFit.cover,
+                    image: _image!,
+                  ),
+                ),
+              ),
+              Flexible(
+                child: Container(
+                  margin: EdgeInsets.fromLTRB(
+                    0,
+                    InheritedChatTheme.of(context).theme.messageInsetsVertical,
+                    InheritedChatTheme.of(context).theme.messageInsetsHorizontal,
+                    InheritedChatTheme.of(context).theme.messageInsetsVertical,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.message.name,
                         style: _user.id == widget.message.author.id
                             ? InheritedChatTheme.of(context)
-                                .theme
-                                .sentMessageCaptionTextStyle
+                            .theme
+                            .sentMessageBodyTextStyle
                             : InheritedChatTheme.of(context)
-                                .theme
-                                .receivedMessageCaptionTextStyle,
+                            .theme
+                            .receivedMessageBodyTextStyle,
+                        textWidthBasis: TextWidthBasis.longestLine,
                       ),
-                    ),
-                  ],
+                      Container(
+                        margin: const EdgeInsets.only(
+                          top: 4,
+                        ),
+                        child: Text(
+                          formatBytes(widget.message.size.truncate()),
+                          style: _user.id == widget.message.author.id
+                              ? InheritedChatTheme.of(context)
+                              .theme
+                              .sentMessageCaptionTextStyle
+                              : InheritedChatTheme.of(context)
+                              .theme
+                              .receivedMessageCaptionTextStyle,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
+            ],
+          ),
+        );
+      }
+      else {
+        return Container(
+          constraints: BoxConstraints(
+            maxHeight: widget.messageWidth.toDouble(),
+            minWidth: 170,
+          ),
+          child: AspectRatio(
+            aspectRatio: _size.aspectRatio > 0 ? _size.aspectRatio : 1,
+            child: Image(
+              fit: BoxFit.contain,
+              image: _image!,
+            ),
+          ),
+        );
+      }
+    }
+
+    return Container(
+      color: _user.id == widget.message.author.id
+          ? InheritedChatTheme.of(context).theme.primaryColor
+          : InheritedChatTheme.of(context).theme.secondaryColor,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            _buildImage(),
+            const SizedBox(height: 10,),
+            Text(widget.message.createdAt.toString().timeAgoFromMillis(),
+              style: _user.id == widget.message.author.id
+                  ? InheritedChatTheme.of(context)
+                  .theme
+                  .sentMessageCaptionTextStyle
+                  : InheritedChatTheme.of(context)
+                  .theme
+                  .receivedMessageCaptionTextStyle,
             ),
           ],
         ),
-      );
-    } else {
-      return Container(
-        constraints: BoxConstraints(
-          maxHeight: widget.messageWidth.toDouble(),
-          minWidth: 170,
-        ),
-        child: AspectRatio(
-          aspectRatio: _size.aspectRatio > 0 ? _size.aspectRatio : 1,
-          child: Image(
-            fit: BoxFit.contain,
-            image: _image!,
-          ),
-        ),
-      );
-    }
+      ),
+    );
   }
 }

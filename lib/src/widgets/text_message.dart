@@ -108,7 +108,7 @@ class TextMessage extends StatelessWidget {
     final name = getUserName(message.author);
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         if (showName)
           Padding(
@@ -143,6 +143,15 @@ class TextMessage extends StatelessWidget {
                         : theme.receivedMessageBodyTextStyle,
                 textWidthBasis: TextWidthBasis.longestLine,
               ),
+        Text(message.createdAt.toString().timeAgoFromMillis(),
+          style: user.id == message.author.id
+              ? InheritedChatTheme.of(context)
+              .theme
+              .sentMessageCaptionTextStyle
+              : InheritedChatTheme.of(context)
+              .theme
+              .receivedMessageCaptionTextStyle,
+        ),
       ],
     );
   }

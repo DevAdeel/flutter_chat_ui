@@ -84,6 +84,48 @@ bool isConsistsOfEmojis(
   return multiEmojiRegExp.hasMatch(message.text);
 }
 
+extension Timestamp on String {
+  String timeAgo() {
+    //server format 12/26/2021 06:56:59 pm
+    final serverFormat = DateFormat('MM/dd/yyyy hh:mm:ss a');
+    var serverDate = serverFormat.parseLoose(this);
+    var currentTime = DateTime.now();
+    if (serverDate.day == currentTime.day) {
+      final format = DateFormat('hh:mm a');
+      return format.format(serverDate);
+    }
+    final weekDate = currentTime.add(const Duration(days: -6));
+    if (serverDate.isAfter(weekDate)) {
+      final format = DateFormat('EEE hh:mm a');
+      return format.format(serverDate);
+    }
+    final format = DateFormat('MMM dd');
+    return format.format(serverDate);
+  }
+
+  DateTime toDateTime() {
+    final serverFormat = DateFormat('MM/dd/yyyy hh:mm:ss a');
+    return serverFormat.parseLoose(this);
+  }
+
+  String timeAgoFromMillis(){
+    final millis = int.parse(this);
+    var serverDate = DateTime.fromMicrosecondsSinceEpoch(millis);
+    var currentTime = DateTime.now();
+    if (serverDate.day == currentTime.day) {
+      final format = DateFormat('hh:mm a');
+      return format.format(serverDate);
+    }
+    final weekDate = currentTime.add(const Duration(days: -6));
+    if (serverDate.isAfter(weekDate)) {
+      final format = DateFormat('EEE hh:mm a');
+      return format.format(serverDate);
+    }
+    final format = DateFormat('MMM dd');
+    return format.format(serverDate);
+  }
+}
+
 /// Parses provided messages to chat messages (with headers and spacers) and
 /// returns them with a gallery
 List<Object> calculateChatMessages(
