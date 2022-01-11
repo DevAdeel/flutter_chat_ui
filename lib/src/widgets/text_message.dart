@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_link_previewer/flutter_link_previewer.dart'
     show LinkPreview, regexLink;
+
 import '../models/emoji_enlargement_behavior.dart';
 import '../util.dart';
 import 'inherited_chat_theme.dart';
@@ -108,7 +109,7 @@ class TextMessage extends StatelessWidget {
     final name = getUserName(message.author);
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (showName)
           Padding(
@@ -143,14 +144,13 @@ class TextMessage extends StatelessWidget {
                         : theme.receivedMessageBodyTextStyle,
                 textWidthBasis: TextWidthBasis.longestLine,
               ),
-        Text(message.createdAt.toString().timeAgoFromMillis(),
+        Text(
+          message.createdAt.toString().timeAgoFromMillis(),
           style: user.id == message.author.id
-              ? InheritedChatTheme.of(context)
-              .theme
-              .sentMessageCaptionTextStyle
+              ? InheritedChatTheme.of(context).theme.sentMessageCaptionTextStyle
               : InheritedChatTheme.of(context)
-              .theme
-              .receivedMessageCaptionTextStyle,
+                  .theme
+                  .receivedMessageCaptionTextStyle,
         ),
       ],
     );

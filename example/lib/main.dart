@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -189,11 +190,13 @@ class _ChatPageState extends State<ChatPage> {
         child: Chat(
           messages: _messages,
           onAttachmentPressed: _handleAtachmentPressed,
-          onMessageTap: (a){},
+          onMessageTap: (a) {},
+          showUserNames: true,
           onPreviewDataFetched: _handlePreviewDataFetched,
           onSendPressed: _handleSendPressed,
-          onRightSwipe: (message){
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message.id)));
+          onRightSwipe: (message) {
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text(message.id)));
           },
           user: _user,
         ),
