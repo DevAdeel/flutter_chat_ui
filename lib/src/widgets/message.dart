@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+
 import '../models/emoji_enlargement_behavior.dart';
 import '../util.dart';
 import 'file_message.dart';
@@ -204,7 +205,11 @@ class Message extends StatelessWidget {
         final imageMessage = message as types.ImageMessage;
         return imageMessageBuilder != null
             ? imageMessageBuilder!(imageMessage, messageWidth: messageWidth)
-            : ImageMessage(message: imageMessage, messageWidth: messageWidth);
+            : ImageMessage(
+                message: imageMessage,
+                messageWidth: messageWidth,
+                showName: showName,
+              );
       case types.MessageType.text:
         final textMessage = message as types.TextMessage;
         return textMessageBuilder != null

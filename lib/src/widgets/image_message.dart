@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:flutter_chat_ui/flutter_chat_ui.dart';
+
 import '../conditional/conditional.dart';
 import '../util.dart';
 import 'inherited_chat_theme.dart';
@@ -15,10 +17,14 @@ class ImageMessage extends StatefulWidget {
     Key? key,
     required this.message,
     required this.messageWidth,
+    required this.showName,
   }) : super(key: key);
 
   /// [types.ImageMessage]
   final types.ImageMessage message;
+
+  /// Show user name for the received message. Useful for a group chat.
+  final bool showName;
 
   /// Maximum message width
   final int messageWidth;
@@ -78,15 +84,14 @@ class _ImageMessageState extends State<ImageMessage> {
   Widget build(BuildContext context) {
     final _user = InheritedUser.of(context).user;
 
-    _buildImage(){
+    _buildImage() {
       if (_size.aspectRatio == 0) {
         return Container(
           color: InheritedChatTheme.of(context).theme.secondaryColor,
           height: _size.height,
           width: _size.width,
         );
-      }
-      else if (_size.aspectRatio < 0.1 || _size.aspectRatio > 10) {
+      } else if (_size.aspectRatio < 0.1 || _size.aspectRatio > 10) {
         return Container(
           color: _user.id == widget.message.author.id
               ? InheritedChatTheme.of(context).theme.primaryColor
@@ -116,7 +121,9 @@ class _ImageMessageState extends State<ImageMessage> {
                   margin: EdgeInsets.fromLTRB(
                     0,
                     InheritedChatTheme.of(context).theme.messageInsetsVertical,
-                    InheritedChatTheme.of(context).theme.messageInsetsHorizontal,
+                    InheritedChatTheme.of(context)
+                        .theme
+                        .messageInsetsHorizontal,
                     InheritedChatTheme.of(context).theme.messageInsetsVertical,
                   ),
                   child: Column(
@@ -126,11 +133,11 @@ class _ImageMessageState extends State<ImageMessage> {
                         widget.message.name,
                         style: _user.id == widget.message.author.id
                             ? InheritedChatTheme.of(context)
-                            .theme
-                            .sentMessageBodyTextStyle
+                                .theme
+                                .sentMessageBodyTextStyle
                             : InheritedChatTheme.of(context)
-                            .theme
-                            .receivedMessageBodyTextStyle,
+                                .theme
+                                .receivedMessageBodyTextStyle,
                         textWidthBasis: TextWidthBasis.longestLine,
                       ),
                       Container(
@@ -141,11 +148,11 @@ class _ImageMessageState extends State<ImageMessage> {
                           formatBytes(widget.message.size.truncate()),
                           style: _user.id == widget.message.author.id
                               ? InheritedChatTheme.of(context)
-                              .theme
-                              .sentMessageCaptionTextStyle
+                                  .theme
+                                  .sentMessageCaptionTextStyle
                               : InheritedChatTheme.of(context)
-                              .theme
-                              .receivedMessageCaptionTextStyle,
+                                  .theme
+                                  .receivedMessageCaptionTextStyle,
                         ),
                       ),
                     ],
@@ -155,8 +162,7 @@ class _ImageMessageState extends State<ImageMessage> {
             ],
           ),
         );
-      }
-      else {
+      } else {
         return Container(
           constraints: BoxConstraints(
             maxHeight: widget.messageWidth.toDouble(),
@@ -180,18 +186,23 @@ class _ImageMessageState extends State<ImageMessage> {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
+          crossAxisAlignment: _user.id == widget.message.author.id
+              ? CrossAxisAlignment.end
+              : CrossAxisAlignment.start,
           children: [
             _buildImage(),
-            const SizedBox(height: 10,),
-            Text(widget.message.createdAt.toString().timeAgoFromMillis(),
+            const SizedBox(
+              height: 10,
+            ),
+            Text(
+              widget.message.createdAt.toString().timeAgoFromMillis(),
               style: _user.id == widget.message.author.id
                   ? InheritedChatTheme.of(context)
-                  .theme
-                  .sentMessageCaptionTextStyle
+                      .theme
+                      .sentMessageCaptionTextStyle
                   : InheritedChatTheme.of(context)
-                  .theme
-                  .receivedMessageCaptionTextStyle,
+                      .theme
+                      .receivedMessageCaptionTextStyle,
             ),
           ],
         ),

@@ -109,11 +109,13 @@ class TextMessage extends StatelessWidget {
     final name = getUserName(message.author);
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: user.id == message.author.id
+          ? CrossAxisAlignment.end
+          : CrossAxisAlignment.start,
       children: [
         if (showName)
           Padding(
-            padding: const EdgeInsets.only(bottom: 6),
+            padding: const EdgeInsets.only(bottom: 4),
             child: Text(
               name,
               maxLines: 1,
