@@ -1,8 +1,10 @@
 import 'dart:math';
 import 'dart:ui';
+
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:intl/intl.dart';
+
 import './models/date_header.dart';
 import './models/emoji_enlargement_behavior.dart';
 import './models/message_spacer.dart';
@@ -108,11 +110,11 @@ extension Timestamp on String {
     return serverFormat.parseLoose(this);
   }
 
-  String timeAgoFromMillis(){
+  String timeAgoFromMillis() {
     final millis = int.parse(this);
     var serverDate = DateTime.fromMicrosecondsSinceEpoch(millis);
     var currentTime = DateTime.now();
-    if (serverDate.day == currentTime.day) {
+    if (serverDate.day == currentTime.day || serverDate.isAfter(currentTime)) {
       final format = DateFormat('hh:mm a');
       return format.format(serverDate);
     }
