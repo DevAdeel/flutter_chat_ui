@@ -112,19 +112,20 @@ extension Timestamp on String {
 
   String timeAgoFromMillis() {
     final millis = int.parse(this);
-    var serverDate = DateTime.fromMicrosecondsSinceEpoch(millis);
+    var serverDate = DateTime.fromMillisecondsSinceEpoch(millis);
+    var localDate = serverDate.toLocal();
     var currentTime = DateTime.now();
-    if (serverDate.day == currentTime.day || serverDate.isAfter(currentTime)) {
+    if (localDate.day == currentTime.day || localDate.isAfter(currentTime)) {
       final format = DateFormat('hh:mm a');
-      return format.format(serverDate);
+      return format.format(localDate);
     }
     final weekDate = currentTime.add(const Duration(days: -6));
-    if (serverDate.isAfter(weekDate)) {
+    if (localDate.isAfter(weekDate)) {
       final format = DateFormat('EEE hh:mm a');
-      return format.format(serverDate);
+      return format.format(localDate);
     }
     final format = DateFormat('MMM dd');
-    return format.format(serverDate);
+    return format.format(localDate);
   }
 }
 
